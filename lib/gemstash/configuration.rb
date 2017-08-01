@@ -14,7 +14,10 @@ module Gemstash
       fetch_timeout: 20,
       # Actual default for db_connection_options is dynamic based on the adapter
       db_connection_options: {},
-      puma_threads: 16
+      puma_threads: 16,
+      puma_workers: 1,
+      cache_expiration: 30 * 60,
+      cache_max_size: 500,
     }.freeze
 
     DEFAULT_FILE = File.expand_path("~/.gemstash/config.yml").freeze
