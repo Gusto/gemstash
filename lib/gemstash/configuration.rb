@@ -62,7 +62,7 @@ module Gemstash
       when "sqlite3"
         { max_connections: 1 }.merge(self[:db_connection_options])
       when "postgres", "mysql", "mysql2"
-        { max_connections: self[:puma_threads] + 1 }.merge(self[:db_connection_options])
+        { max_connections: (self[:puma_workers] * self[:puma_threads]) + 1 }.merge(self[:db_connection_options])
       else
         raise "Unsupported DB adapter: '#{self[:db_adapter]}'"
       end

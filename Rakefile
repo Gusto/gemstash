@@ -1,14 +1,12 @@
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
 require "rubocop/rake_task"
-require_relative "rake/changelog.rb"
-require_relative "rake/doc.rb"
 
 RuboCop::RakeTask.new
 
 desc "Run specs"
 RSpec::Core::RakeTask.new(:spec) do |t|
-  t.rspec_opts = %w(--color)
+  t.rspec_opts = %w[--color]
 end
 
 task spec: :rubocop

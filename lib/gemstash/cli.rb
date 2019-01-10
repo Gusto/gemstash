@@ -24,10 +24,10 @@ module Gemstash
     end
 
     def self.start(args = ARGV)
-      help_flags = %w(-h --help)
+      help_flags = %w[-h --help]
 
       if args.any? {|a| help_flags.include?(a) }
-        super(%w(help) + args.reject {|a| help_flags.include?(a) })
+        super(%w[help] + args.reject {|a| help_flags.include?(a) })
       else
         super
       end
@@ -46,7 +46,7 @@ module Gemstash
       end
     end
 
-    desc "authorize [PERMISSIONS...]", "Add authorizations to push/yank/unyank private gems"
+    desc "authorize [PERMISSIONS...]", "Add authorizations to push/yank private gems"
     method_option :remove, :type => :boolean, :default => false, :desc =>
       "Remove an authorization key"
     method_option :config_file, :type => :string, :desc =>
@@ -101,7 +101,7 @@ module Gemstash
     def version
       say "Gemstash version #{Gemstash::VERSION}"
     end
-    map %w(-v --version) => :version
+    map %w[-v --version] => :version
 
   private
 

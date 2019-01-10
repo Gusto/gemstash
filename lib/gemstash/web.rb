@@ -26,6 +26,11 @@ module Gemstash
       body JSON.dump("error" => "Not found", "code" => 404)
     end
 
+    error GemPusher::ExistingVersionError do
+      status 422
+      body JSON.dump("error" => "Version already exists", "code" => 422)
+    end
+
     get "/" do
       @gem_source.serve_root
     end
@@ -44,10 +49,6 @@ module Gemstash
 
     delete "/api/v1/gems/yank" do
       @gem_source.serve_yank
-    end
-
-    put "/api/v1/gems/unyank" do
-      @gem_source.serve_unyank
     end
 
     post "/api/v1/add_spec.json" do

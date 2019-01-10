@@ -36,13 +36,13 @@ describe Gemstash::Authorization do
     context "with invalid permissions" do
       it "raises an error" do
         expect { Gemstash::Authorization.authorize("abc", nil) }.to raise_error(RuntimeError)
-        expect { Gemstash::Authorization.authorize("abc", %w(invalid)) }.to raise_error(RuntimeError)
+        expect { Gemstash::Authorization.authorize("abc", %w[invalid]) }.to raise_error(RuntimeError)
       end
     end
 
     context "with 'all' permission along with other permissions" do
       it "raises an error" do
-        expect { Gemstash::Authorization.authorize("abc", %w(all yank)) }.to raise_error(RuntimeError)
+        expect { Gemstash::Authorization.authorize("abc", %w[all yank]) }.to raise_error(RuntimeError)
       end
     end
 
@@ -59,7 +59,7 @@ describe Gemstash::Authorization do
         Gemstash::Authorization.authorize("abc", "all")
         expect(Gemstash::Authorization["abc"].all?).to be_truthy
         expect(the_log).to include("Authorization 'abc' updated with access to 'all'")
-        Gemstash::Authorization.authorize("abc", %w(push yank))
+        Gemstash::Authorization.authorize("abc", %w[push yank])
         expect(Gemstash::Authorization["abc"].all?).to be_falsey
         expect(Gemstash::Authorization["abc"].push?).to be_truthy
         expect(Gemstash::Authorization["abc"].yank?).to be_truthy
@@ -97,20 +97,18 @@ describe Gemstash::Authorization do
 
     context "with an auth key without permission" do
       before do
-        Gemstash::Authorization.authorize("abc", %w(yank))
+        Gemstash::Authorization.authorize("abc", %w[yank])
       end
 
       it "raises a Gemstash::NotAuthorizedError" do
         expect { Gemstash::Authorization.check("abc", "push") }.
           to raise_error(Gemstash::NotAuthorizedError, /key doesn't have push access/)
-        expect { Gemstash::Authorization.check("abc", "unyank") }.
-          to raise_error(Gemstash::NotAuthorizedError, /key doesn't have unyank access/)
       end
     end
 
     context "with an auth key with permission" do
       before do
-        Gemstash::Authorization.authorize("abc", %w(push))
+        Gemstash::Authorization.authorize("abc", %w[push])
       end
 
       it "doesn't raise an error" do
@@ -163,27 +161,24 @@ describe Gemstash::Authorization do
         expect(auth.all?).to be_truthy
         expect(auth.push?).to be_truthy
         expect(auth.yank?).to be_truthy
-        expect(auth.unyank?).to be_truthy
         expect(auth.fetch?).to be_truthy
       end
     end
 
     context "a mix of permissions" do
       it "has authorization for given auths" do
-        Gemstash::Authorization.authorize("abc", %w(push yank))
+        Gemstash::Authorization.authorize("abc", %w[push yank])
         auth = Gemstash::Authorization["abc"]
         expect(auth.all?).to be_falsey
         expect(auth.push?).to be_truthy
         expect(auth.yank?).to be_truthy
-        expect(auth.unyank?).to be_falsey
         expect(auth.fetch?).to be_falsey
 
-        Gemstash::Authorization.authorize("abc", %w(yank unyank fetch))
+        Gemstash::Authorization.authorize("abc", %w[yank fetch])
         auth = Gemstash::Authorization["abc"]
         expect(auth.all?).to be_falsey
         expect(auth.push?).to be_falsey
         expect(auth.yank?).to be_truthy
-        expect(auth.unyank?).to be_truthy
         expect(auth.fetch?).to be_truthy
       end
     end
