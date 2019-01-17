@@ -29,10 +29,6 @@ module Gemstash
         @cli.options[:daemonize]
       end
 
-      def puma_config
-        File.expand_path("../../puma.rb", __FILE__)
-      end
-
       def store_pidfile
         gemstash_env.pidfile = pidfile?
       end
@@ -47,10 +43,22 @@ module Gemstash
 
       def puma_args
         [
-          "--config", puma_config,
-          "--workers", gemstash_env.config[:puma_workers],
-          "--threads", gemstash_env.config[:puma_threads]
+          '--config', puma_config,
+          '--workers', puma_workers,
+          '--threads', puma_threads,
         ]
+      end
+
+      def puma_workers
+        gemstash_env.config[:puma_workers] ? gemstash_env.config[:puma_workers].to_s : '0'
+      end
+
+      def puma_threads
+        gemstash_env.config[:puma_threads] ? gemstash_env.config[:puma_threads].to_s : '0'
+      end
+
+      def puma_config
+        File.expand_path("../../puma.rb", __FILE__)
       end
 
       def daemonize_args
